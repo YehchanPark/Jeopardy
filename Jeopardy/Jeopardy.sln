@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32126.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Jeopardy", "Jeopardy\Jeopardy.vcxproj", "{2639ABFC-0D8A-4471-916F-F2A04D4AE361}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Debug|x64.ActiveCfg = Debug|x64
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Debug|x64.Build.0 = Debug|x64
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Debug|x86.ActiveCfg = Debug|Win32
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Debug|x86.Build.0 = Debug|Win32
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Release|x64.ActiveCfg = Release|x64
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Release|x64.Build.0 = Release|x64
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Release|x86.ActiveCfg = Release|Win32
+		{2639ABFC-0D8A-4471-916F-F2A04D4AE361}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CA4C0C6-216E-46DB-96FE-FEC9D3258152}
+	EndGlobalSection
+EndGlobal
