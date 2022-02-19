@@ -1,10 +1,12 @@
 /*
  * Tutorial 3 Jeopardy Project for SOFE 3950U / CSCI 3020U: Operating Systems
  *
- * Copyright (C) 2015, <GROUP MEMBERS>
+ * Copyright (C) 2015, <Banujan Sutheswaran, Cyrus Lee, Yehchan Park>
  * All rights reserved.
  *
  */
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +22,7 @@
 // Put global environment variables here
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
-void tokenize(char *input, char **tokens);
+char* tokenize(char *input);
 
 // Displays the game results for each player, their name and final score, ranked from first to last place
 void show_results(player *players, int num_players);
@@ -38,29 +40,109 @@ int main(int argc, char *argv[])
 
     // Prompt for players names
     // initialize each of the players in the array
+    
     for (int i = 0; i < 4; i++) {
         printf("Please enter your name player %d: ",i+1);
         fgets(players[i].name, BUFFER_LEN, stdin); //get the user input
+        players[i].name[strlen(players[i].name) - 1] = '\0';
         players[i].score = 0; //initialize their score to 0
     }
-    players[1].score = 10;
-    players[2].score = 5;
-    players[3].score = 3;
-    players[0].score = 1;
-    for (int i = 0; i < NUM_PLAYERS; i++) {
-        printf("%s", players[i].name);
-    }
     
-    show_results(players, NUM_PLAYERS);
+    
+  
 
     // Perform an infinite loop getting command input from users until game ends
-    while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
+    while (true)
     {
         // Call functions from the questions and players source files
-        
-        // Execute the game until all questions are answered
+        int roundCounter = 0;
 
+        while (roundCounter < 12) {
+                //declare category and value variable 
+                
+                int currentPlayer = roundCounter % 4;
+
+                printf("%s's Turn\n", players[currentPlayer].name);
+                display_categories();
+                char categoryValueinput[2][BUFFER_LEN];
+            do {
+                
+              
+                
+                do{//ask the user to choose the category and value
+                    int i = 0;
+                    char* pch;
+                    printf("Choose a category (as a number) and value: ");
+                    fgets(buffer, BUFFER_LEN, stdin);
+                    pch = strtok(buffer, " "); //spliting user input into 2 tokens
+                    while (pch != NULL) { //looping until done. all tokens acquired
+                        strcpy(categoryValueinput[i], pch); //copying token into array
+                        i++; //increasing counter to make sure only two inputs are inputted
+                        pch = strtok(NULL, " "); //moving to the next token
+                    }
+                    if(i==2){
+                        if (valid_CategoryAnswer(atoi(categoryValueinput[0]), atoi(categoryValueinput[1]))) {
+                            break;
+                        }
+                    }
+
+                    printf("Please enter the category and value in the correct format. (EG. 1 100)\n");
+                } while (true);
+                switch (atoi(categoryValueinput[0])) {
+                case 1: strcpy(categoryValueinput[0], "CSGO"); break;
+                case 2: strcpy(categoryValueinput[0], "Valorant"); break;
+                case 3: strcpy(categoryValueinput[0], "Apex"); break;
+                }
+                
+                if (already_answered(categoryValueinput[0], atoi(categoryValueinput[1]))) {
+                    printf("The question you selected has already been answered. Please select another question!\n");
+                }
+            } while (already_answered(categoryValueinput[0], atoi(categoryValueinput[1])));
+            
+            
+            
+            display_question(categoryValueinput[0], atoi(categoryValueinput[1]));
+            
+            char* answer;
+            int result;
+            do {
+                printf("Please enter your answer : ");
+                fgets(buffer, BUFFER_LEN, stdin);
+
+                answer = tokenize(buffer);
+                result = strcmp(answer, "invalid");
+                if(result == 0){
+                    printf("Please use the proper formating starting with \"what is \" or \"who is \"");
+                }
+
+            } while (result == 0);
+            printf("%s\n",answer);
+            answer[strlen(answer) - 1] = '\0';
+            //ask for answer
+            //string tok
+
+            if(valid_answer(categoryValueinput[0], atoi(categoryValueinput[1]), answer)){//Correct answer
+                printf("Thats the right answer!\n");
+                players[currentPlayer].score += atoi(categoryValueinput[1]);
+			}
+            else{
+                //incorrect answer
+                printf("That was the wrong answer!!!\n");
+                players[currentPlayer].score -= atoi(categoryValueinput[1]);
+                display_answer(categoryValueinput[0], atoi(categoryValueinput[1]));
+                //Print out correct answer
+            }
+            //Questions are set to asnwered in the valid answer
+            
+
+            // Execute the game until all questions are answered
+
+            
+            roundCounter++;
+        }
         // Display the final results and exit
+        show_results(players, NUM_PLAYERS);
+        break;
     }
     return EXIT_SUCCESS;
 }
@@ -68,6 +150,7 @@ int main(int argc, char *argv[])
 
 void show_results(player* players, int num_players) {
     int* scores = malloc(num_players * sizeof(*scores)); //defining array of size count
+    int printed[] = { 0, 0, 0, 0 };
     if (!scores) { //error check for malloc
         printf("There was a problem with malloc.");
         exit(1);
@@ -90,21 +173,49 @@ void show_results(player* players, int num_players) {
         }
         scores[j + 1] = key;
     }
-    for (int i = 0; i < num_players; i++) {
-        printf("%d ", scores[i]);
-        printf("\n");
-    }
+    
     int place = 1;
+    int count = 0;
     for (int i = 0; i < num_players; i++) { //print results
         for (int j = 0; j < num_players; j++) {
+            if (count==4){
+                break;
+            }
             if (players[j].score == scores[i]) {
-                printf("Place %d : %s Score: %d\n", place, players[j].name, players[j].score);
+                if (printed[j] == 0) {
+                    printf("Place %d : %s Score: %d\n", place, players[j].name, players[j].score);
+                    printed[j] = 1;
+                    count++;
+                }
             }
             
         }
         place++;
+        if (count==4){
+                break;
+            }
     }
 
 
     free(scores); //free memory
+}
+
+char* tokenize(char *input){
+    
+    char* pch;
+    char check[32][BUFFER_LEN];
+    int i = 0;
+    pch = strtok(input, " "); //spliting user input into 3 tokens
+    while (pch != NULL) { //looping until done. all tokens acquired
+        strcpy(check[i], pch); //copying token into array
+        i++; //increasing counter to make sure only two inputs are inputted
+        pch = strtok(NULL, " "); //moving to the next token
+    }
+    if (strcmp(check[0], "who") != 0 && strcmp(check[0], "what") != 0) {
+        return "invalid";
+    }
+    else if (strcmp(check[1], "is") != 0) {
+        return "invalid";
+    }
+    return check[2];
 }

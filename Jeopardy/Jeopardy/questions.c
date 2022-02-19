@@ -16,7 +16,7 @@ void initialize_game(void)
     // initialize each question struct and assign it to the questions array
     question csgoq1 = { "CSGO","Cost of an AWP","4750",100,false};
     question csgoq2 = { "CSGO","A s1mple graffiti map.","Cache",200,false };
-    question csgoq3 = { "CSG","Most successful organization in terms of majors. ","Astralis",300,false };
+    question csgoq3 = { "CSGO","Most successful organization in terms of majors. ","Astralis",300,false };
     question csgoq4 = { "CSGO","Team that ended the 87-0 NIP win streak.","VP",400,false };
 
     question valorantq1 = { "Valorant","Amount of seconds that a Jett smoke lasts.","4.5",100,false };
@@ -76,22 +76,46 @@ void display_question(char *category, int value)
     //find the question by iterating through the corresponding category and dollar value
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (strcmp(questions[i].category, category) == 0 && questions[i].value == value) {
-            printf("%s\n", questions[i].question);
+            printf("Your question is: %s\n", questions[i].question);
         }
     }
 }
-
+void display_answer(char* category, int value)
+{
+    //find the question by iterating through the corresponding category and dollar value
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value) {
+            printf("The correct answer is %s\n", questions[i].answer);
+        }
+    }
+}
 // Returns true if the answer is correct for the question for that category and dollar value
 bool valid_answer(char *category, int value, char *answer)
 {
     //find the question and check if the answer is the correct answer
     for (int i = 0; i < NUM_QUESTIONS; i++) {
-        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value && strcmp(questions[i].answer, answer) == 0) {
+        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value) {
             questions[i].answered = true;
-            return true;
+            if (strcmp(questions[i].answer, answer) == 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
     }
     return false;
+}
+bool valid_CategoryAnswer(int category, int value) {
+
+    if(category > 0 && category < 4){
+        if(value == 100 || value == 200 || value == 300 || value == 400){
+            return true;
+		}
+	}
+
+    return false;
+ 
 }
 
 // Returns true if the question has already been answered
