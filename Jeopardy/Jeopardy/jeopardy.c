@@ -100,23 +100,24 @@ int main(int argc, char *argv[])
             } while (already_answered(categoryValueinput[0], atoi(categoryValueinput[1])));
             
             
-            
+
             display_question(categoryValueinput[0], atoi(categoryValueinput[1]));
             
             char* answer;
             int result;
             do {
                 printf("Please enter your answer : ");
-                fgets(buffer, BUFFER_LEN, stdin);
+                fgets(buffer, sizeof buffer, stdin);
 
                 answer = tokenize(buffer);
+
                 result = strcmp(answer, "invalid");
                 if(result == 0){
                     printf("Please use the proper formating starting with \"what is \" or \"who is \"");
                 }
 
             } while (result == 0);
-            printf("%s\n",answer);
+
             answer[strlen(answer) - 1] = '\0';
             //ask for answer
             //string tok
@@ -203,19 +204,25 @@ void show_results(player* players, int num_players) {
 char* tokenize(char *input){
     
     char* pch;
-    char check[32][BUFFER_LEN];
+    char array[3][100];
     int i = 0;
-    pch = strtok(input, " "); //spliting user input into 3 tokens
+
+    pch = strtok(input, " ,"); //spliting user input into 3 tokens
     while (pch != NULL) { //looping until done. all tokens acquired
-        strcpy(check[i], pch); //copying token into array
+        strcpy(array[i],pch); //copying token into array
+
         i++; //increasing counter to make sure only two inputs are inputted
-        pch = strtok(NULL, " "); //moving to the next token
+        pch = strtok(NULL, " ,"); //moving to the next token
     }
-    if (strcmp(check[0], "who") != 0 && strcmp(check[0], "what") != 0) {
+
+    if (strcmp(array[0], "who") != 0 && strcmp(array[0], "what") != 0) {
         return "invalid";
     }
-    else if (strcmp(check[1], "is") != 0) {
+
+    if (strcmp(array[1], "is") != 0) {
         return "invalid";
     }
-    return check[2];
+
+    strcpy(input,array[2]);
+    return input;
 }
